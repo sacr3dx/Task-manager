@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app.database.database import task_db
+from app.core.database import task_db
 
 
 router = APIRouter(prefix="/main_task", tags=["Main actions with tasks"])
