@@ -1,41 +1,43 @@
-from fastapi import APIRouter, HTTPException
-
-from app.core.database import task_db
+from fastapi import APIRouter
+from app.schemas.task_schema import TaskAddSchema
+from app.core.database import SessionDep, engine
+from app.model.base_model import TaskModel, Base
 
 
 router = APIRouter(prefix="/main_task", tags=["Main actions with tasks"])
 
 
+@router.post("/")
+async def add_new_task(data: TaskAddSchema, session: SessionDep):
+    new_task=TaskModel(
+        title=data.title,
+        description=data.description,
+        deadline=data.deadline
+    )
+    session.add(new_task)
+    await session.commit()
+    return {'message': 'New task added'}
+
+@router.post("/setup_database")
+async def create_db():
+    async with engine.connect() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+
 @router.get('/')
 def get_tasks():
-    return task_db.items()
+    ...
+
 
 
 @router.get('/{num_task}')
-def get_special_task(num_task: int):
-    if num_task in task_db:
-        return task_db[num_task]
-    raise HTTPException(status_code=404, detail="Task not found")
+def get_special_task():
+    ...
 
 
-@router.put("/")
-def add_new_task(task: str):
-    num= max(task_db.keys()) + 1
-    task_db[num] = task
-    return {"message: Task added"}
 
 
 @router.delete('/{num_task}')
-def delete_task(num_task: int):
-    if num_task not in task_db:
-        raise HTTPException(status_code=404, detail="Task not found")
-    del task_db[num_task]
-
-    new_bd={}
-
-    for index, value in enumerate(task_db.values(), 1):
-        new_bd[index]= value
-
-    task_db.clear()
-    task_db.update(new_bd)
-    return {'message': 'Task deleted'}
+def delete_task():
+    ...
