@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from typing import Optional
 
@@ -11,3 +12,10 @@ class TaskModel(Base):
     title: Mapped[str]
     description: Mapped[Optional[str]]
     deadline: Mapped[Optional[int]]
+
+class TaskResponse(BaseModel):
+    id: int
+    title: str
+
+    class Config:
+        from_attributes=True
