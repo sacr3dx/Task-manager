@@ -14,11 +14,9 @@ async def get_tasks(session: SessionDep):
     result = await session.execute(
         select(TaskModel)
     )
+
     tasks = result.scalars().all()
     return tasks
-             #           ^
-             #           |
-             # В этой ручке очевидная проблема которую я не вижу
 
 
 @router.get('/{task_id}', response_model=TaskResponse)
