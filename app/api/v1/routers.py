@@ -29,13 +29,6 @@ def add_new_task(task: str):
 def delete_task(num_task: int):
     if num_task not in task_db:
         raise HTTPException(status_code=404, detail="Task not found")
+
     del task_db[num_task]
-
-    new_bd={}
-
-    for index, value in enumerate(task_db.values(), 1):
-        new_bd[index]= value
-
-    task_db.clear()
-    task_db.update(new_bd)
     return {'message': 'Task deleted'}
